@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
-class UserController extends Controller implements JWT
+class UserController extends Controller
 {
     public function AllUsers()
     {
@@ -27,23 +29,45 @@ class UserController extends Controller implements JWT
     public function Create(Request $request)
     {
         $this->validate($request, [
-            'email' => 'required|string',
-            'password' => 'required|string',
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:6',
         ]);
 
-        $hash = hash('sha256', 'criptografiagdigital2023x' . $request->input('password'));
-
-        $create = User::create([
-            'name' => $request->input('name'),
-            'email' => $request->input('email'),
-            'password' => $hash,
-            'status' => 'active',
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
         ]);
 
+        $token = Auth::login($user);
         return response()->json([
-            'message' => 'Usuario criado com sucesso!',
-            'Criado' => $create
-        ]);;
+            'status' => 'success',
+            'message' => 'User created successfully',
+            'user' => $user,
+            'authorisation' => [
+                'token' => $token,
+            ]
+        ]);
+    }
+
+    public function Login(Request $request)
+    {
+        $credentials = $request->only(['email', 'password']);
+      
+        $token = Auth::attempt($credentials);
+
+        if (!$token) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Unauthorized',
+            ], 401);
+        }
+
+        $user = Auth::user();
+        return response()->json([
+            'token' => $token,
+        ]);
     }
 
     public function Update(Request $request, $id)
@@ -68,16 +92,11 @@ class UserController extends Controller implements JWT
         ]);
     }
 
-    public function Delete($id)
-    {
-        $delete = User::findOrFail($id)->first();
-        $delete->delete($id);
-
-        return response()->json([
-            'message' => 'Usuario deletado com sucesso!',
-            'deletado' => $delete
-        ]);
+    public function Delete(){
+        User::where('id', Auth::id())->delete();
+        return response()->json(['message' => 'Usuário deletado com sucesso']);
     }
+    
     public function Disable($id)
     {
         $Disable = User::where('id', $id)->first();
@@ -99,6 +118,13 @@ class UserController extends Controller implements JWT
         return response()->json([
             'message' => 'Usuario ativado com sucesso!',
             'ativado' => $Enable
+        ]);
+    }
+
+    protected function respondWithToken($token)
+    {
+        return response()->json([
+            'access_token' => $token,
         ]);
     }
 }

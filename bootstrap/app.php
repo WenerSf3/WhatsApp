@@ -6,6 +6,8 @@ require_once __DIR__.'/../vendor/autoload.php';
     dirname(__DIR__)
 ))->bootstrap();
 
+use Laravel\Lumen\Application as LumenApplication;
+
 date_default_timezone_set(env('APP_TIMEZONE', 'UTC'));
 
 /*
@@ -62,6 +64,7 @@ $app->singleton(
 $app->configure('app');
 $app->configure('jwt');
 
+
 /*
 |--------------------------------------------------------------------------
 | Register Middleware
@@ -97,6 +100,15 @@ $app->register(App\Providers\AuthServiceProvider::class);
 $app->register(App\Providers\EventServiceProvider::class);
 $app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
 
+$app->routeMiddleware([
+    'auth' => App\Http\Middleware\Authenticate::class,
+]);
+
+$app->register(App\Providers\AuthServiceProvider::class);
+
+// Uncomment this line
+
+// Add this line
 /*
 |--------------------------------------------------------------------------
 | Load The Application Routes
