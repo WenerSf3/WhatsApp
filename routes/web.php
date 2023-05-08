@@ -11,7 +11,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->delete('delete/{id}', 'UserController@Delete');
     });
     $router->group(['prefix' => 'chat'], function () use ($router) {
-        $router->get('list', 'ChatController@AllUsers');
+        $router->get('list', 'ChatController@list');
         $router->post('create', 'ChatController@Create');
         $router->put('update/{id}', 'ChatController@Update');
         $router->put('disable/{id}', 'ChatController@Disable');

@@ -30,7 +30,7 @@ class ChatController extends Controller
             'status_message' => 'created',
         ]);
         
-        return $this->chat->all();
+        return $created;
 
     }
 
@@ -41,7 +41,7 @@ class ChatController extends Controller
             'status_message' => 'updated',
         ]);
 
-        return $this->chat->all();
+        return $updated;
     }
 
     public function delete($id){
