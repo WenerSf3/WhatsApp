@@ -106,6 +106,10 @@ $app->routeMiddleware([
 
 $app->register(App\Providers\AuthServiceProvider::class);
 
+$app->middleware([
+    App\Http\Middleware\CorsMiddleware::class
+]);
+
 // Uncomment this line
 
 // Add this line
