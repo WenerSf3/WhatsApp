@@ -9,9 +9,15 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+    protected $user;
+
+    public function __construct(){
+        $this->user = New User;
+    }
+
     public function AllUsers()
     {
-        $AllUsers = User::all();
+        $AllUsers = $this->user->all();
         $Count = $AllUsers->count();
 
         if (!$Count == 0) {
@@ -34,7 +40,7 @@ class UserController extends Controller
             'password' => 'required|string|min:6',
         ]);
 
-        $user = User::create([
+        $user = $this->user->create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
@@ -72,7 +78,7 @@ class UserController extends Controller
 
     public function Update(Request $request, $id)
     {
-        $update = User::where('id', $id)->first();
+        $update = $this->user->where('id', $id)->first();
 
         $hash = hash('sha256', 'criptografiagdigital2023x' . $request->input('password'));
         
@@ -93,13 +99,13 @@ class UserController extends Controller
     }
 
     public function Delete(){
-        User::where('id', Auth::id())->delete();
+        $this->user->where('id', Auth::id())->delete();
         return response()->json(['message' => 'Usuário deletado com sucesso']);
     }
     
     public function Disable($id)
     {
-        $Disable = User::where('id', $id)->first();
+        $Disable = $this->user->where('id', $id)->first();
         $Disable->update([
             'status' => 'disable'
         ]);
@@ -110,7 +116,7 @@ class UserController extends Controller
     }
     public function Enable($id)
     {
-        $Enable = User::where('id', $id)->first();
+        $Enable = $this->user->where('id', $id)->first();
 
         $Enable->update([
             'status' => 'Enable'

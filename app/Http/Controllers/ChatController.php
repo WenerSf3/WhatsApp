@@ -6,17 +6,23 @@ use App\Models\chat;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Lumen\Routing\Controller;
-use Illuminate\Support\Facades\Http;
 
 class ChatController extends Controller
 {
+    protected $chat;
+
+    public function __construct(){
+        
+        $this->chat = New Chat;
+    }
+
     public function list(){
-        $list = Chat::all();
+        $list = $this->chat->all();
         return response()->json($list);
     }
 
     public function create(Request $request){
-        $created = Chat::create([
+        $created = $this->chat->create([
             'message' => $request->input('message'),
             'user_id' => Auth::id(),
             'to_id' => $request->input('to'),
@@ -24,27 +30,22 @@ class ChatController extends Controller
             'status_message' => 'created',
         ]);
         
-        return response()->json([
-            'message' => 'Criado com Sucesso!',
-            $created 
-        ]);
+        return $this->chat->all();
+
     }
 
     public function update($id, Request $request){
-        $updated = Chat::findOrFail($id)->first();
+        $updated = $this->chat->findOrFail($id)->first();
         $updated->update([
             'message' => $request->input('message'),
             'status_message' => 'updated',
         ]);
 
-        return response()->json([
-            'message' => 'Atualizado com Sucesso!',
-            $updated
-        ]);
+        return $this->chat->all();
     }
 
     public function delete($id){
-        $deleted = Chat::findOrFail($id)->first();
+        $deleted = $this->chat->findOrFail($id)->first();
         $deleted->delete($deleted);
 
         return response()->json([
