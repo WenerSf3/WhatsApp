@@ -13,8 +13,8 @@ return new class extends Migration
             $table->foreignId('user_id')->references('id')->on('users');
             $table->foreignId('to_id')->references('id')->on('users');
             $table->string('message');
-            $table->string('status');
-            $table->string('status_mensage');
+            $table->string('status')->nullable();
+            $table->string('status_message')->nullable();
             $table->timestamps();
         });
     }

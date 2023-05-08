@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\chat;
+use App\Models\Chat;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Lumen\Routing\Controller;
@@ -25,7 +25,7 @@ class ChatController extends Controller
         $created = $this->chat->create([
             'message' => $request->input('message'),
             'user_id' => Auth::id(),
-            'to_id' => $request->input('to'),
+            'to_id' => $request->input('to_id'),
             'status' => 'preparing',
             'status_message' => 'created',
         ]);
